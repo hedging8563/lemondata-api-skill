@@ -12,7 +12,7 @@
   <a href="https://lemondata.cc">Website</a> •
   <a href="https://docs.lemondata.cc">Documentation</a> •
   <a href="https://lemondata.cc/en/models">Models</a> •
-  <a href="https://lemondata.cc/en#pricing">Pricing</a>
+  <a href="https://lemondata.cc/#pricing">Pricing</a>
 </p>
 
 ---
@@ -126,7 +126,7 @@ client = OpenAI(
 
 - [API Documentation](https://docs.lemondata.cc)
 - [Available Models](https://lemondata.cc/en/models)
-- [Pricing](https://lemondata.cc/en#pricing) (30% lower than official prices)
+- [Pricing](https://lemondata.cc/#pricing) (30% lower than official prices)
 - [Dashboard](https://lemondata.cc/dashboard)
 
 ## 📄 License

@@ -256,7 +256,7 @@ A: Sign in at https://lemondata.cc/en/dashboard/api-keys to create one
 A: Hundreds of models including GPT, Claude, Gemini, DeepSeek, Llama, etc. Full list at https://lemondata.cc/en/models
 
 **Q: What's the pricing?**
-A: 30% lower than official prices. Details at https://lemondata.cc/en#pricing
+A: 30% lower than official prices. Details at https://lemondata.cc/#pricing
 
 **Q: Which SDKs are supported?**
 A: Fully compatible with OpenAI SDK (Python, Node.js, Go, etc.), plus Anthropic SDK and Google Gemini SDK
@@ -265,6 +265,6 @@ A: Fully compatible with OpenAI SDK (Python, Node.js, Go, etc.), plus Anthropic 
 
 - Website: https://lemondata.cc
 - API Documentation: https://docs.lemondata.cc
-- Pricing: https://lemondata.cc/en#pricing
+- Pricing: https://lemondata.cc/#pricing
 - Models: https://lemondata.cc/en/models
 - Dashboard: https://lemondata.cc/dashboard
