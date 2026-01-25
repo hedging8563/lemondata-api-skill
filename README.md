@@ -34,8 +34,10 @@ When you want to use AI features in your code (like GPT-4, image generation, spe
 ### Option 1: npx (Recommended)
 
 ```bash
-npx add-skill hedging8563/lemondata-api-skill
+npx add-skill hedging8563/lemondata-api-skill -y
 ```
+
+This will automatically install the skill to all detected coding agents (Claude Code, Cursor, Copilot, etc.).
 
 ### Option 2: Share GitHub URL
 
