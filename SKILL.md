@@ -250,13 +250,13 @@ message = client.messages.create(
 ## FAQ
 
 **Q: Where do I get an API Key?**
-A: Sign in at https://lemondata.cc/dashboard/api-keys to create one
+A: Sign in at https://lemondata.cc/en/dashboard/api-keys to create one
 
 **Q: Which models are supported?**
-A: Hundreds of models including GPT, Claude, Gemini, DeepSeek, Llama, etc. Full list at https://lemondata.cc/models
+A: Hundreds of models including GPT, Claude, Gemini, DeepSeek, Llama, etc. Full list at https://lemondata.cc/en/models
 
 **Q: What's the pricing?**
-A: 30% lower than official prices. Details at https://lemondata.cc/pricing
+A: 30% lower than official prices. Details at https://lemondata.cc/en#pricing
 
 **Q: Which SDKs are supported?**
 A: Fully compatible with OpenAI SDK (Python, Node.js, Go, etc.), plus Anthropic SDK and Google Gemini SDK
@@ -265,6 +265,6 @@ A: Fully compatible with OpenAI SDK (Python, Node.js, Go, etc.), plus Anthropic 
 
 - Website: https://lemondata.cc
 - API Documentation: https://docs.lemondata.cc
-- Pricing: https://lemondata.cc/pricing
-- Models: https://lemondata.cc/models
+- Pricing: https://lemondata.cc/en#pricing
+- Models: https://lemondata.cc/en/models
 - Dashboard: https://lemondata.cc/dashboard
