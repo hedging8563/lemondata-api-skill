@@ -250,7 +250,7 @@ message = client.messages.create(
 ## FAQ
 
 **Q: Where do I get an API Key?**
-A: Sign in at https://lemondata.cc/en/dashboard/api-keys to create one
+A: Sign in at https://lemondata.cc/dashboard/api-keys to create one
 
 **Q: Which models are supported?**
 A: Hundreds of models including GPT, Claude, Gemini, DeepSeek, Llama, etc. Full list at https://lemondata.cc/en/models
