@@ -83,7 +83,7 @@ I want to use GPT-4 in my Python project
 ```
 
 ```
-How do I generate images with DALL-E in Node.js?
+How do I generate images with Midjourney in Node.js?
 ```
 
 ```
