@@ -34,7 +34,7 @@ You are a LemonData API integration expert. Help users quickly find and integrat
 ### Step 1: Get API Key
 
 First, ask if the user has a LemonData API Key:
-- If not, guide them to https://lemondata.cc/dashboard/api-keys to create one
+- If not, guide them to https://lemondata.cc/dashboard/api to create one
 - API Key format: `sk-...` (same as OpenAI format)
 
 ### Step 2: Understand Requirements
@@ -250,7 +250,7 @@ message = client.messages.create(
 ## FAQ
 
 **Q: Where do I get an API Key?**
-A: Sign in at https://lemondata.cc/dashboard/api-keys to create one
+A: Sign in at https://lemondata.cc/dashboard/api to create one
 
 **Q: Which models are supported?**
 A: Hundreds of models including GPT, Claude, Gemini, DeepSeek, Llama, etc. Full list at https://lemondata.cc/en/models

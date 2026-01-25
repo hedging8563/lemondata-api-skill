@@ -55,7 +55,7 @@ If you see `lemondata-api-integration`, you're ready!
 
 1. Visit [lemondata.cc](https://lemondata.cc)
 2. Sign in or create an account
-3. Go to [Dashboard → API Keys](https://lemondata.cc/dashboard/api-keys)
+3. Go to [Dashboard → API Keys](https://lemondata.cc/dashboard/api)
 4. Create and copy your key (format: `sk-...`)
 
 ### Start Using
