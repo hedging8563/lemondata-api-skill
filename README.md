@@ -31,7 +31,13 @@ When you want to use AI features in your code (like GPT-4, image generation, spe
 
 ## 📦 Installation
 
-### Option 1: Share GitHub URL (Recommended)
+### Option 1: npx (Recommended)
+
+```bash
+npx add-skill hedging8563/lemondata-api-skill
+```
+
+### Option 2: Share GitHub URL
 
 1. Open **Claude Code**
 2. Paste this link in the chat:
@@ -40,7 +46,7 @@ When you want to use AI features in your code (like GPT-4, image generation, spe
    ```
 3. Claude Code will automatically recognize and load the skill
 
-### Option 2: Clone to Skills Directory
+### Option 3: Git Clone
 
 ```bash
 # Personal installation (available in all projects)
