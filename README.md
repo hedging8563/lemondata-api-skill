@@ -79,13 +79,13 @@ Integrate speech-to-text API in Go
 | Feature Type | Examples |
 |-------------|----------|
 | 💬 Chat | GPT-4o, Claude, Gemini, DeepSeek |
-| 🎨 Image Generation | DALL-E 3, Midjourney, Flux, Stable Diffusion |
+| 🎨 Image Generation | Midjourney, Flux, Stable Diffusion |
 | 🎬 Video Generation | Sora, Runway, Kling, Luma AI |
 | 🎵 Music Generation | Suno |
 | 🗿 3D Models | Tripo3D |
 | 🎤 Audio | Text-to-Speech, Speech-to-Text |
-| 📊 Embeddings | text-embedding-3, bge |
-| 🔄 Rerank | bge-reranker |
+| 📊 Embeddings | text-embedding-3 |
+| 🔄 Rerank | bce-reranker, qwen3-rerank |
 
 ## 💡 Key Features
 

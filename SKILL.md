@@ -44,14 +44,14 @@ Identify the API category the user needs:
 | Category | Example Models | API Endpoint |
 |----------|---------------|--------------|
 | 💬 Chat Completion | GPT-4o, Claude, Gemini | `/v1/chat/completions` |
-| 🎨 Image Generation | DALL-E 3, Midjourney, Flux | `/v1/images/generations` |
+| 🎨 Image Generation | Midjourney, Flux, Stable Diffusion | `/v1/images/generations` |
 | 🎬 Video Generation | Sora, Runway, Kling, Luma | `/v1/video/generations` |
 | 🎵 Music Generation | Suno | `/v1/music/generations` |
 | 🗿 3D Model | Tripo3D | `/v1/3d/generations` |
 | 🎤 Text to Speech | TTS | `/v1/audio/speech` |
 | 🎧 Speech to Text | Whisper | `/v1/audio/transcriptions` |
 | 📊 Embeddings | text-embedding-3 | `/v1/embeddings` |
-| 🔄 Rerank | bge-reranker | `/v1/rerank` |
+| 🔄 Rerank | bce-reranker, qwen3-rerank | `/v1/rerank` |
 
 ### Step 3: Search APIs
 
