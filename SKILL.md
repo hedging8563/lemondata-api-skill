@@ -1,21 +1,6 @@
 ---
 name: lemondata-api-integration
-description: Quickly integrate LemonData's hundreds of AI APIs with automatic code generation in multiple languages
-triggers:
-  - "LemonData"
-  - "lemondata"
-  - "API integration"
-  - "AI API"
-  - "GPT"
-  - "Claude"
-  - "Gemini"
-  - "image generation"
-  - "video generation"
-  - "music generation"
-  - "3D model"
-  - "text to speech"
-  - "speech to text"
-  - "embeddings"
+description: Integrate LemonData AI APIs (GPT, Claude, Gemini, DeepSeek, image generation, video generation, music, 3D, TTS, STT, embeddings) into your code. Use when the user mentions LemonData, AI API integration, or wants to use models like GPT-4o, Claude, Gemini, Midjourney, Flux, Sora, Suno, or Tripo3D. Generates code in Python, JavaScript, Go, PHP, or cURL.
 ---
 
 # LemonData API Integration Assistant

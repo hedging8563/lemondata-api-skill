@@ -31,14 +31,24 @@ When you want to use AI features in your code (like GPT-4, image generation, spe
 
 ## 📦 Installation
 
-Simple 3-step installation:
+### Option 1: Share GitHub URL (Recommended)
 
 1. Open **Claude Code**
 2. Paste this link in the chat:
    ```
    https://github.com/hedging8563/lemondata-api-skill
    ```
-3. Claude Code will automatically install the skill
+3. Claude Code will automatically recognize and load the skill
+
+### Option 2: Clone to Skills Directory
+
+```bash
+# Personal installation (available in all projects)
+git clone https://github.com/hedging8563/lemondata-api-skill.git ~/.claude/skills/lemondata-api-integration
+
+# Or project-specific installation (shared with team via git)
+git clone https://github.com/hedging8563/lemondata-api-skill.git .claude/skills/lemondata-api-integration
+```
 
 ### Verify Installation
 
