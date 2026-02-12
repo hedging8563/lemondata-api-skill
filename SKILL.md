@@ -5,251 +5,270 @@ description: Integrate LemonData AI APIs (GPT, Claude, Gemini, DeepSeek, image g
 
 # LemonData API Integration Assistant
 
-You are a LemonData API integration expert. Help users quickly find and integrate any of LemonData's hundreds of AI APIs into their code.
+You are a LemonData API integration expert. LemonData provides 300+ AI models through OpenAI-compatible endpoints. The API is **Agent-First** — error responses contain enough structured information for you to self-correct on the next call.
 
-## Core Capabilities
+## Core Principle: Try First, Learn from Errors
 
-- **Smart API Search**: Quickly match the best API based on user requirements
-- **Multi-Language Code Generation**: Python, JavaScript, Go, PHP, cURL
-- **OpenAI Compatible**: Most APIs are fully compatible with OpenAI SDKs
-- **Native Format Support**: Supports Anthropic Messages API, Google Gemini API native formats
+Do NOT search for documentation or model lists before making your first API call. Just try it. If it fails, the error response tells you exactly what to do.
 
-## Workflow
-
-### Step 1: Get API Key
-
-First, ask if the user has a LemonData API Key:
-- If not, guide them to https://lemondata.cc/dashboard/api to create one
-- API Key format: `sk-...` (same as OpenAI format)
-
-### Step 2: Understand Requirements
-
-Identify the API category the user needs:
-
-| Category | Example Models | API Endpoint |
-|----------|---------------|--------------|
-| 💬 Chat Completion | GPT-4o, Claude, Gemini | `/v1/chat/completions` |
-| 🎨 Image Generation | Midjourney, Flux, Stable Diffusion | `/v1/images/generations` |
-| 🎬 Video Generation | Sora, Runway, Kling, Luma | `/v1/video/generations` |
-| 🎵 Music Generation | Suno | `/v1/music/generations` |
-| 🗿 3D Model | Tripo3D | `/v1/3d/generations` |
-| 🎤 Text to Speech | TTS | `/v1/audio/speech` |
-| 🎧 Speech to Text | Whisper | `/v1/audio/transcriptions` |
-| 📊 Embeddings | text-embedding-3 | `/v1/embeddings` |
-| 🔄 Rerank | bce-reranker, qwen3-rerank | `/v1/rerank` |
-
-### Step 3: Search APIs
-
-**Important**: Use the script to search APIs, do not read the API list file directly:
-
-```bash
-python3 scripts/search_api.py "keyword"
-python3 scripts/search_api.py "GPT"
-python3 scripts/search_api.py "image" "generation"
+```
+Your workflow:
+  1. Try the API call with your best guess
+  2. If 400 → read error.did_you_mean and error.suggestions → retry with correct model
+  3. If 402 → read error.balance_usd and error.suggestions → switch to cheaper model
+  4. If 503 → read error.alternatives and error.retry_after → switch model or wait
+  5. If 200 → check X-LemonData-Hint header for optimization tips
 ```
 
-The script will automatically fetch the latest model list from LemonData API.
-
-### Step 4: Display Search Results
-
-Show the user matching API options:
-- API name and category
-- Pricing information (input/output price)
-- Documentation link
-
-### Step 5: Get API Documentation
-
-Use WebFetch to get detailed API documentation:
-- Documentation URL: `https://docs.lemondata.cc/api-reference/{category}/{endpoint}`
-
-### Step 6: Generate Integration Code
-
-Generate complete integration code based on the user's chosen programming language, referencing `references/integration_examples.md`.
-
-**Code Requirements**:
-- Complete API call functions
-- Proper authentication header configuration
-- Error handling mechanisms
-- Actual usage examples
-- Streaming response handling (if applicable)
-
-### Step 7: Security Reminder
-
-⚠️ **Important Security Warning**:
-
-If the user wants to use the API in a **frontend web page**, you must warn them:
-> API Key will be exposed in client code, posing a leak risk!
-> We recommend using backend frameworks (Next.js API Routes, Express, Flask) to call APIs server-side.
-
-✅ Best Practices:
-- Store API Key in environment variables
-- Never commit API Key to Git
-- Proxy API calls through backend
-
-## API Base Information
+## Quick Start
 
 **Base URL**: `https://api.lemondata.cc`
+**Auth**: `Authorization: Bearer sk-your-api-key`
+**Get API Key**: https://lemondata.cc/dashboard/api
 
-**Authentication**:
-```
-Authorization: Bearer sk-your-api-key
+### First Call (just try it)
+
+```bash
+curl -X POST https://api.lemondata.cc/v1/chat/completions \
+  -H "Authorization: Bearer sk-YOUR-KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"model":"gpt-4o","messages":[{"role":"user","content":"hello"}]}'
 ```
 
-**OpenAI SDK Configuration (Python)**:
+## Discovery: How to Find Models
+
+### Option 1: Read llms.txt (recommended first step)
+
+```bash
+curl https://lemondata.cc/llms.txt
+```
+
+Returns a machine-readable overview with common model names, available endpoints, and code examples. Read this once to understand the API landscape.
+
+### Option 2: List models with filters
+
+```bash
+# All models
+curl https://api.lemondata.cc/v1/models -H "Authorization: Bearer sk-KEY"
+
+# Filter by category
+curl "https://api.lemondata.cc/v1/models?category=chat"
+curl "https://api.lemondata.cc/v1/models?category=image"
+curl "https://api.lemondata.cc/v1/models?category=video"
+
+# Filter by capability
+curl "https://api.lemondata.cc/v1/models?tag=coding"
+curl "https://api.lemondata.cc/v1/models?tag=vision"
+
+# Combine filters
+curl "https://api.lemondata.cc/v1/models?category=chat&tag=coding"
+```
+
+Each model in the response includes a `lemondata` extension with:
+- `category`: chat, image, video, audio, tts, stt, 3d, embedding, rerank
+- `pricing`: input/output price per 1M tokens
+- `pricing_unit`: per_token, per_image, per_second, per_request
+- `cache_pricing`: prompt cache read/write prices (if supported)
+- `max_input_tokens` / `max_output_tokens`: context window size
+- `tags`: capability tags (coding, vision, fast, etc.)
+
+### Option 3: Just guess the model name
+
+If you guess wrong, the error response will correct you:
+
+```json
+{
+  "error": {
+    "message": "Model 'gpt-5-turbo' not found",
+    "code": "model_not_found",
+    "did_you_mean": "gpt-4-turbo",
+    "suggestions": [
+      {"id": "gpt-4o", "input_price": "2.50", "tags": ["chat","vision","fast"]},
+      {"id": "gpt-4-turbo", "input_price": "10.00", "tags": ["chat","vision"]}
+    ],
+    "hint": "GET /v1/models to list all available models. Use ?tag=xxx to filter."
+  }
+}
+```
+
+## Structured Error Responses
+
+Every error response is designed to help you self-correct:
+
+### model_not_found (400)
+- `did_you_mean`: closest matching model name
+- `suggestions`: top models with pricing and tags
+- `hint`: how to discover available models
+
+### insufficient_balance (402)
+- `balance_usd`: current account balance
+- `estimated_cost_usd`: estimated cost of the request
+- `suggestions`: cheaper alternative models
+- `hint`: how to reduce cost
+
+### all_channels_failed / model_unavailable (503)
+- `retryable`: true
+- `retry_after`: seconds to wait
+- `alternatives`: currently available alternative models
+- `hint`: retry or switch model
+
+### rate_limit_exceeded (429)
+- `retryable`: true
+- `retry_after`: exact seconds to wait
+- `hint`: your rate limit details
+
+### context_length_exceeded (400, from upstream)
+- `suggestions`: models with larger context windows
+- `hint`: how to check max_input_tokens
+
+## Available Endpoints
+
+| Category | Endpoint | SDK Method |
+|----------|----------|------------|
+| Chat | `POST /v1/chat/completions` | `client.chat.completions.create()` |
+| Chat (Anthropic native) | `POST /v1/messages` | `anthropic.messages.create()` |
+| Chat (Gemini native) | `POST /v1beta/gemini` | `genai.GenerativeModel()` |
+| Responses | `POST /v1/responses` | `client.responses.create()` |
+| Images | `POST /v1/images/generations` | `client.images.generate()` |
+| Video | `POST /v1/video/generations` | HTTP POST (async) |
+| Music | `POST /v1/music/generations` | HTTP POST (async) |
+| 3D | `POST /v1/3d/generations` | HTTP POST (async) |
+| TTS | `POST /v1/audio/speech` | `client.audio.speech.create()` |
+| STT | `POST /v1/audio/transcriptions` | `client.audio.transcriptions.create()` |
+| Embeddings | `POST /v1/embeddings` | `client.embeddings.create()` |
+| Rerank | `POST /v1/rerank` | HTTP POST |
+
+### Native Endpoint Optimization
+
+When you call `/v1/chat/completions` with a Claude or Gemini model, the response includes optimization headers:
+
+```
+X-LemonData-Hint: This model supports native Anthropic format. Use POST /v1/messages for better performance.
+X-LemonData-Native-Endpoint: /v1/messages
+```
+
+Use the native endpoint for better performance and access to provider-specific features (extended thinking, grounding, etc.).
+
+## SDK Configuration
+
+### OpenAI SDK (Python)
 ```python
 from openai import OpenAI
-
-client = OpenAI(
-    api_key="sk-your-api-key",
-    base_url="https://api.lemondata.cc/v1"
-)
+client = OpenAI(api_key="sk-YOUR-KEY", base_url="https://api.lemondata.cc/v1")
 ```
 
-**OpenAI SDK Configuration (JavaScript)**:
+### OpenAI SDK (JavaScript)
 ```javascript
 import OpenAI from 'openai';
-
-const client = new OpenAI({
-  apiKey: 'sk-your-api-key',
-  baseURL: 'https://api.lemondata.cc/v1'
-});
+const client = new OpenAI({ apiKey: 'sk-YOUR-KEY', baseURL: 'https://api.lemondata.cc/v1' });
 ```
 
-**OpenAI SDK Configuration (Go)**:
+### OpenAI SDK (Go)
 ```go
-import "github.com/sashabaranov/go-openai"
-
-config := openai.DefaultConfig("sk-your-api-key")
+config := openai.DefaultConfig("sk-YOUR-KEY")
 config.BaseURL = "https://api.lemondata.cc/v1"
 client := openai.NewClientWithConfig(config)
 ```
 
-## Special API Formats
-
-### Anthropic Messages API (Claude Models)
-
-Use native Anthropic SDK format:
-
+### Anthropic SDK (Python) — for Claude models
 ```python
 from anthropic import Anthropic
-
-client = Anthropic(
-    api_key="sk-your-api-key",
-    base_url="https://api.lemondata.cc"  # Note: no /v1 suffix
-)
-
-message = client.messages.create(
-    model="claude-sonnet-4-5",
-    max_tokens=1024,
-    messages=[{"role": "user", "content": "Hello!"}]
-)
+client = Anthropic(api_key="sk-YOUR-KEY", base_url="https://api.lemondata.cc")  # No /v1
 ```
 
-### Google Gemini API
+### Anthropic SDK (JavaScript) — for Claude models
+```javascript
+import Anthropic from '@anthropic-ai/sdk';
+const client = new Anthropic({ apiKey: 'sk-YOUR-KEY', baseURL: 'https://api.lemondata.cc' });
+```
 
-Use native Google SDK format:
-
+### Google Gemini SDK (Python) — for Gemini models
 ```python
 import google.generativeai as genai
-
-genai.configure(
-    api_key="sk-your-api-key",
-    transport="rest",
-    client_options={"api_endpoint": "api.lemondata.cc"}
-)
-
-model = genai.GenerativeModel("gemini-2.5-pro")
-response = model.generate_content("Hello!")
+genai.configure(api_key="sk-YOUR-KEY", transport="rest",
+                client_options={"api_endpoint": "api.lemondata.cc"})
 ```
 
-## Async Task Processing
+## Error Handling Best Practice
 
-Video, music, and 3D generation are async tasks that require polling:
+Use the structured error fields to auto-recover:
 
 ```python
-import time
-import requests
+from openai import OpenAI, APIError
 
-# 1. Submit task
-response = requests.post(
-    "https://api.lemondata.cc/v1/video/generations",
-    headers={"Authorization": "Bearer sk-your-api-key"},
-    json={"model": "sora", "prompt": "A cat playing piano"}
-)
-task_id = response.json()["id"]
+client = OpenAI(api_key="sk-YOUR-KEY", base_url="https://api.lemondata.cc/v1")
 
-# 2. Poll status
+try:
+    response = client.chat.completions.create(
+        model="gpt-4o", messages=[{"role": "user", "content": "Hello!"}]
+    )
+    print(response.choices[0].message.content)
+except APIError as e:
+    error = e.body.get("error", {}) if isinstance(e.body, dict) else {}
+
+    if error.get("code") == "model_not_found":
+        # Use the suggested model
+        suggested = error.get("did_you_mean") or error.get("suggestions", [{}])[0].get("id")
+        if suggested:
+            response = client.chat.completions.create(
+                model=suggested, messages=[{"role": "user", "content": "Hello!"}]
+            )
+
+    elif error.get("code") == "insufficient_balance":
+        # Try a cheaper model from suggestions
+        cheaper = error.get("suggestions", [{}])[0].get("id")
+        if cheaper:
+            response = client.chat.completions.create(
+                model=cheaper, messages=[{"role": "user", "content": "Hello!"}]
+            )
+
+    elif error.get("retryable"):
+        import time
+        wait = error.get("retry_after", 5)
+        time.sleep(wait)
+        # Retry the same request
+```
+
+## Async Task Processing (Video/Music/3D)
+
+These endpoints return a task ID. Poll for completion:
+
+```python
+import time, requests
+
+headers = {"Authorization": "Bearer sk-YOUR-KEY", "Content-Type": "application/json"}
+
+# Submit
+resp = requests.post("https://api.lemondata.cc/v1/video/generations",
+    headers=headers, json={"model": "sora", "prompt": "A cat playing piano"})
+task_id = resp.json()["id"]
+
+# Poll
 while True:
-    status = requests.get(
-        f"https://api.lemondata.cc/v1/video/generations/{task_id}",
-        headers={"Authorization": "Bearer sk-your-api-key"}
-    ).json()
-
+    status = requests.get(f"https://api.lemondata.cc/v1/video/generations/{task_id}",
+        headers=headers).json()
     if status["status"] == "completed":
-        print(f"Video URL: {status['video_url']}")
+        print(f"URL: {status['video_url']}")
         break
     elif status["status"] == "failed":
         print(f"Error: {status['error']}")
         break
-
-    time.sleep(5)  # Poll every 5 seconds
+    time.sleep(5)
 ```
 
-## Advanced Features
+## Security
 
-### Streaming Responses
+If integrating in a **frontend web page**, the API key will be exposed in client code. Always proxy through a backend:
+- Next.js API Routes / Server Actions
+- Express / Fastify middleware
+- Flask / FastAPI backend
 
-```python
-stream = client.chat.completions.create(
-    model="gpt-4o",
-    messages=[{"role": "user", "content": "Hello!"}],
-    stream=True
-)
-
-for chunk in stream:
-    if chunk.choices[0].delta.content:
-        print(chunk.choices[0].delta.content, end="")
-```
-
-### Extended Thinking (Claude Opus 4.5)
-
-```python
-from anthropic import Anthropic
-
-client = Anthropic(
-    api_key="sk-your-api-key",
-    base_url="https://api.lemondata.cc"
-)
-
-message = client.messages.create(
-    model="claude-opus-4-5",
-    max_tokens=16000,
-    thinking={
-        "type": "enabled",
-        "budget_tokens": 10000
-    },
-    messages=[{"role": "user", "content": "Solve this complex problem..."}]
-)
-```
-
-## FAQ
-
-**Q: Where do I get an API Key?**
-A: Sign in at https://lemondata.cc/dashboard/api to create one
-
-**Q: Which models are supported?**
-A: Hundreds of models including GPT, Claude, Gemini, DeepSeek, Llama, etc. Full list at https://lemondata.cc/en/models
-
-**Q: What's the pricing?**
-A: 30% lower than official prices. Details at https://lemondata.cc/#pricing
-
-**Q: Which SDKs are supported?**
-A: Fully compatible with OpenAI SDK (Python, Node.js, Go, etc.), plus Anthropic SDK and Google Gemini SDK
+Store API keys in environment variables. Never commit them to git.
 
 ## Resources
 
 - Website: https://lemondata.cc
-- API Documentation: https://docs.lemondata.cc
-- Pricing: https://lemondata.cc/#pricing
+- API Docs: https://docs.lemondata.cc
+- llms.txt: https://lemondata.cc/llms.txt
 - Models: https://lemondata.cc/en/models
 - Dashboard: https://lemondata.cc/dashboard

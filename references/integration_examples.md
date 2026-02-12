@@ -439,20 +439,57 @@ client = OpenAI(
 )
 ```
 
-### 2. Add Error Handling
+### 2. Agent-First Error Handling (Recommended)
+
+LemonData returns structured error hints. Use them to auto-recover:
+
+```python
+import time
+from openai import OpenAI, APIError
+
+client = OpenAI(api_key="sk-your-api-key", base_url="https://api.lemondata.cc/v1")
+
+def call_with_recovery(model, messages, max_retries=2):
+    for attempt in range(max_retries + 1):
+        try:
+            return client.chat.completions.create(model=model, messages=messages)
+        except APIError as e:
+            error = e.body.get("error", {}) if isinstance(e.body, dict) else {}
+            code = error.get("code", "")
+
+            if code == "model_not_found":
+                # API tells us the correct model name
+                model = error.get("did_you_mean") or error.get("suggestions", [{}])[0].get("id", model)
+                continue
+
+            elif code == "insufficient_balance":
+                # Switch to a cheaper model from suggestions
+                suggestions = error.get("suggestions", [])
+                if suggestions:
+                    model = suggestions[0]["id"]
+                    continue
+
+            elif error.get("retryable"):
+                # Wait and retry (rate limit or temporary unavailability)
+                time.sleep(error.get("retry_after", 5))
+                continue
+
+            raise  # Unrecoverable error
+
+response = call_with_recovery("gpt-4o", [{"role": "user", "content": "Hello!"}])
+print(response.choices[0].message.content)
+```
+
+### 3. Basic Error Handling
 
 ```python
 from openai import OpenAI, APIError, RateLimitError
 
-client = OpenAI(
-    api_key="sk-your-api-key",
-    base_url="https://api.lemondata.cc/v1"
-)
+client = OpenAI(api_key="sk-your-api-key", base_url="https://api.lemondata.cc/v1")
 
 try:
     response = client.chat.completions.create(
-        model="gpt-4o",
-        messages=[{"role": "user", "content": "Hello!"}]
+        model="gpt-4o", messages=[{"role": "user", "content": "Hello!"}]
     )
     print(response.choices[0].message.content)
 except RateLimitError:
