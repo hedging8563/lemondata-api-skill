@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <strong>Integrate 300+ AI APIs with any coding agent — Claude Code, Cursor, Copilot, Windsurf</strong>
+  <strong>Integrate 300+ AI APIs with any coding agent — Claude Code, Gemini CLI, Cursor, Copilot, Windsurf, Kiro</strong>
 </p>
 
 <p align="center">
@@ -31,12 +31,17 @@ This skill teaches your coding agent how to integrate any of LemonData's AI APIs
 ### npx (Recommended)
 
 ```bash
-npx add-skill hedging8563/lemondata-api-skill -y
+npx skills add hedging8563/lemondata-api-skill -y
 ```
 
-Installs to **all detected coding agents** automatically (Claude Code, Cursor, Copilot, etc.).
+Installs to **all detected coding agents** automatically (Claude Code, Cursor, Copilot, Gemini CLI, Kiro, etc.).
 
-### Claude Code
+> **Note**: `npx add-skill` has been deprecated. Use `npx skills add` instead.
+
+### Manual Install
+
+<details>
+<summary>Claude Code</summary>
 
 ```bash
 # Personal (all projects)
@@ -45,6 +50,23 @@ git clone https://github.com/hedging8563/lemondata-api-skill.git ~/.claude/skill
 # Project-specific (shared with team)
 git clone https://github.com/hedging8563/lemondata-api-skill.git .claude/skills/lemondata-api-integration
 ```
+</details>
+
+<details>
+<summary>Gemini CLI</summary>
+
+```bash
+git clone https://github.com/hedging8563/lemondata-api-skill.git ~/.gemini/skills/lemondata-api-integration
+```
+</details>
+
+<details>
+<summary>Cursor / Windsurf / Copilot</summary>
+
+```bash
+git clone https://github.com/hedging8563/lemondata-api-skill.git .agents/skills/lemondata-api-integration
+```
+</details>
 
 ### Verify
 
@@ -97,7 +119,7 @@ Every error response includes structured hints:
 
 | Type | Examples |
 |------|----------|
-| Chat | GPT-4o, Claude, Gemini, DeepSeek |
+| Chat | GPT-5, Claude Opus/Sonnet, Gemini 3, DeepSeek |
 | Image Generation | Midjourney, Flux, Stable Diffusion |
 | Video Generation | Sora, Runway, Kling, Luma AI |
 | Music Generation | Suno |
