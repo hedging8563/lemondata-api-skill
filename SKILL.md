@@ -117,6 +117,14 @@ Every error response is designed to help you self-correct:
 - `retry_after`: exact seconds to wait
 - `hint`: your rate limit details
 
+For OpenAI-compatible endpoints, LemonData uses stable public gateway error types such as:
+
+- `rate_limit_exceeded` (429)
+- `upstream_error` (502)
+- `all_channels_failed` (503)
+
+Anthropic-compatible and Gemini-compatible endpoints use their own native response shapes.
+
 ### context_length_exceeded (400, from upstream)
 - `suggestions`: models with larger context windows
 - `hint`: how to check max_input_tokens
